@@ -90,6 +90,7 @@ function run(refs, schema, container, synchronous) {
 
   const refDepthMin = optionAPI('refDepthMin') || 0;
   const refDepthMax = optionAPI('refDepthMax') || 3;
+  const ignoreRefNotFound = optionAPI('ignoreRefNotFound') || false;
 
   try {
     const { resolveSchema } = buildResolveSchema({
@@ -99,6 +100,7 @@ function run(refs, schema, container, synchronous) {
       synchronous,
       refDepthMin,
       refDepthMax,
+      ignoreRefNotFound,
     });
     const result = traverse(utils.clone(schema), [], resolveSchema);
 

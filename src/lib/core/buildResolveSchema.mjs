@@ -3,13 +3,14 @@ import random from './random.mjs';
 import utils from './utils.mjs';
 
 const buildResolveSchema = ({
-  refs,
-  schema,
-  container,
-  synchronous,
-  refDepthMax,
-  refDepthMin,
-}) => {
+                              refs,
+                              schema,
+                              container,
+                              synchronous,
+                              refDepthMax,
+                              refDepthMin,
+                              ignoreRefNotFound,
+                            }) => {
   const recursiveUtil = {};
   const seenRefs = {};
 
@@ -42,7 +43,13 @@ const buildResolveSchema = ({
       // increasing depth only for repeated refs seems to be fixing #258
       if (sub.$ref === '#' || seenRefs[sub.$ref] < 0 || (lastRef === sub.$ref && ++depth > maxDepth)) { // eslint-disable-line
         if (sub.$ref !== '#' && lastPath && lastPath.length === rootPath.length) {
-          return utils.getLocalRef(schema, sub.$ref, synchronous && refs);
+          try {
+            return utils.getLocalRef(schema, sub.$ref, synchronous && refs);
+          } catch (e) {
+            if (!ignoreRefNotFound) {
+              throw e;
+            }
+          }
         }
         delete sub.$ref;
         return sub;
@@ -60,7 +67,13 @@ const buildResolveSchema = ({
       if (sub.$ref.indexOf('#/') === -1) {
         ref = refs[sub.$ref] || null;
       } else {
-        ref = utils.getLocalRef(schema, sub.$ref, synchronous && refs) || null;
+        try {
+          ref = utils.getLocalRef(schema, sub.$ref, synchronous && refs) || null;
+        } catch (e) {
+          if (!ignoreRefNotFound) {
+            throw e;
+          }
+        }
       }
 
       let fixed;

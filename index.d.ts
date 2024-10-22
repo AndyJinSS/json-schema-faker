@@ -35,6 +35,7 @@ export interface JSONSchemaFakerOptions {
   renderComment?: boolean;
   refDepthMax?: number;
   refDepthMin?: number;
+  ignoreRefNotFound?: boolean;
 }
 
 export type JSONSchemaFakerRefs = Schema[] | { [k: string]: Schema };
@@ -79,6 +80,6 @@ export declare const JSONSchemaFaker: JSONSchemaFakerObject;
 
 /** @deprecated The default export is deprecated; use the named export. See https://github.com/json-schema-faker/json-schema-faker/blob/master/docs/DEPRECATED.md */
 declare const jsf: JSONSchemaFakerObject & {
-  (schema: Schema, refs?: JSONSchemaFakerRefs, cwd?: string): JsonValue 
+  (schema: Schema, refs?: JSONSchemaFakerRefs, cwd?: string): JsonValue
 };
 export default jsf;
